@@ -12,7 +12,7 @@ def clear():
         _ = system('clear')
 
 
-def overwrite():
+def overwrite(dtb):
     if path.exists("codes"):
         remove("codes")
     newfile = open("codes", "x+t")
@@ -21,7 +21,7 @@ def overwrite():
     newfile.close
 
 
-def decode():
+def decode(dtb):
     clear()
     print("Enter your encoded text.")
     enctextstr = str(input()).lower()
@@ -53,7 +53,7 @@ def init():
     return(dtb)
 
 
-def analyze():
+def analyze(dtb):
     clear()
     print("Enter encoded text:")
     enclist = list(str(input()).lower())
@@ -93,18 +93,22 @@ def analyze():
     print("Database saved. Press enter to exit.")
     input()
 
-
-print("Loading database...")
-dtb = init()
-print("Database loaded. Press enter to continue.")
-input()
-clear()
-print("Choose:")
-print("[1] Decode text.")
-print("[2] View/edit codebase.")
-print("[3] Analyze text.\n")
-plyr = str(input())
-if plyr == "1":
-    decode()
-elif plyr == "3":
-    analyze()
+def main():
+    print("Loading database...")
+    dtb = init()
+    print("Database loaded. Press enter to continue.")
+    input()
+    clear()
+    print("Choose:")
+    print("[1] Decode text.")
+    print("[2] View/edit codebase.")
+    print("[3] Analyze text.\n")
+    plyr = str(input())
+    if plyr == "1":
+        decode(dtb)
+    elif plyr == "3":
+        analyze(dtb)
+    
+    
+if __name__ == "__main__":
+    main()
