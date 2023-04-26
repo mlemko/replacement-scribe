@@ -138,7 +138,7 @@ def main():
         print("[3] Analyze text.")
         print("[4] Exit\n")
         plyr = str(input())
-        if verin.major <= 3 or verin.minor <= 10:
+        if verin.major <= 3 and verin.minor <= 10:
             match plyr:
                 case "1":
                     decode(dtb)
