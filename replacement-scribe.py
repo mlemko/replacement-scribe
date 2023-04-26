@@ -1,5 +1,6 @@
 # import only system from os
 from os import system, name, remove, path
+from sys import version_info as verin
 
 
 def clear():
@@ -33,7 +34,7 @@ def decode(dtb):
             dectext = dectext + dtb[char]
         else:
             dectext = dectext + char
-    print("Decoded text (press enter to exit):")
+    print("Decoded text (press enter to return):")
     print(dectext)
     input()
 
@@ -62,7 +63,7 @@ def analyze(dtb):
     if len(enclist) != len(declist):
         print("\nError: The texts are not of equal length! Enter agian please.")
         input()
-        analyze()
+        return(analyze(dtb))
     print("\nNow analyzing...")
     newinfo = {}
     for i in range(len(enclist)):
@@ -89,25 +90,77 @@ def analyze(dtb):
     input()
     for k, v in newinfo.items():
         dtb[k] = v
-    overwrite()
-    print("Database saved. Press enter to exit.")
+    overwrite(dtb)
+    print("Database saved. Press enter to return.")
     input()
+    
+def view_data(dtb, changes_made = False):
+    clear()
+    print("Current known replacements:")
+    print("Original\x09Actual")
+    for char in dtb:
+        print(f"'{char}'\x09=>\x09'{dtb[char]}'")
+    if changes_made:
+        print("Type an original character to replace (save to save changes, empty to exit without saving):")
+    else:
+        print("Type an original character to replace (empty to exit):")
+
+    plyr = input()
+    if len(plyr) == 1:
+        if plyr in dtb:
+            print("Replace with?")
+            repl = input().strip()[0].lower()
+            dtb[plyr] = repl
+            changes_made = True
+            print(f"Replaced with {plyr} => {repl}. Press enter to continue.")
+            input()
+    elif plyr == "":
+        if changes_made:
+            if input("Changes made will be lost! Type 'Yes' to confirm: ") != "Yes":
+                return(view_data(dtb, changes_made))
+        return()
+    elif plyr == "save":
+        overwrite(dtb)
+        print("Database saved. Press enter to return.")
+        return()
+    return(view_data(dtb, changes_made))    
 
 def main():
     print("Loading database...")
     dtb = init()
     print("Database loaded. Press enter to continue.")
     input()
-    clear()
-    print("Choose:")
-    print("[1] Decode text.")
-    print("[2] View/edit codebase.")
-    print("[3] Analyze text.\n")
-    plyr = str(input())
-    if plyr == "1":
-        decode(dtb)
-    elif plyr == "3":
-        analyze(dtb)
+    while(True):
+        clear()
+        print("Choose:")
+        print("[1] Decode text.")
+        print("[2] View/edit codebase.")
+        print("[3] Analyze text.")
+        print("[4] Exit\n")
+        plyr = str(input())
+        if verin.major <= 3 or verin.minor <= 10:
+            match plyr:
+                case "1":
+                    decode(dtb)
+                case "2":
+                    view_data(dtb)
+                    dtb = init()
+                case "3":
+                    analyze(dtb)
+                case "4":
+                    exit(0)
+        else:
+            if plyr == "1":
+                decode(dtb)
+            elif plyr == "2":
+                view_data(dtb)
+                dtb = init()
+            elif plyr == "3":
+                analyze(dtb)
+            elif plyr == "4":
+                exit(0)
+        
+    
     
     
 if __name__ == "__main__":
